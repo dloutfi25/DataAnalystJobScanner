@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Search live job-board listings for hybrid data analytics roles in Chicago."
+    >
+    <title>Chicago Hybrid Data Jobs</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, sans-serif;
+        color: #172b4d;
+        background: #f3f6fa;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      main {
+        width: min(100% - 2rem, 46rem);
+        margin: 4rem auto;
+      }
+
+      h1 {
+        margin-bottom: 0.5rem;
+        font-size: clamp(2rem, 6vw, 3rem);
+      }
+
+      p {
+        line-height: 1.6;
+      }
+
+      .intro {
+        margin-top: 0;
+        color: #4b5d75;
+      }
+
+      form,
+      .searches {
+        padding: 1.5rem;
+        border: 1px solid #d6deea;
+        border-radius: 0.75rem;
+        background: #fff;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 1rem;
+        font-weight: 650;
+      }
+
+      input {
+        box-sizing: border-box;
+        display: block;
+        width: 100%;
+        margin-top: 0.4rem;
+        padding: 0.7rem;
+        border: 1px solid #9aabc1;
+        border-radius: 0.4rem;
+        font: inherit;
+      }
+
+      button,
+      .search-link {
+        display: inline-block;
+        padding: 0.7rem 1rem;
+        border: 0;
+        border-radius: 0.4rem;
+        background: #1457a6;
+        color: #fff;
+        font: inherit;
+        font-weight: 650;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      button:hover,
+      .search-link:hover {
+        background: #0c407c;
+      }
+
+      .searches {
+        margin-top: 1.25rem;
+      }
+
+      .searches h2 {
+        margin-top: 0;
+        font-size: 1.2rem;
+      }
+
+      .search-link {
+        margin: 0.25rem 0.35rem 0.25rem 0;
+      }
+
+      #status {
+        min-height: 1.5rem;
+        color: #4b5d75;
+      }
+
+      @media (max-width: 34rem) {
+        main {
+          margin: 2rem auto;
+        }
+
+        form,
+        .searches {
+          padding: 1rem;
+        }
+
+        .search-link {
+          display: block;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Chicago Hybrid Data Jobs</h1>
+      <p class="intro">
+        Search current listings for data analytics roles. Searches open on the job
+        board; this page does not store or invent job postings.
+      </p>
+
+      <form id="search-form">
+        <label for="roles">
+          Roles and keywords
+          <input
+            id="roles"
+            name="roles"
+            value="data analyst OR business analyst OR BI analyst OR analytics"
+            required
+          >
+        </label>
+        <label for="location">
+          Location
+          <input id="location" name="location" value="Chicago, IL" required>
+        </label>
+        <button type="submit">Update searches</button>
+      </form>
+
+      <section class="searches" aria-labelledby="searches-title">
+        <h2 id="searches-title">Search job boards</h2>
+        <a class="search-link" id="google-link" target="_blank" rel="noopener noreferrer">
+          Google Jobs
+        </a>
+        <a class="search-link" id="indeed-link" target="_blank" rel="noopener noreferrer">
+          Indeed
+        </a>
+        <a class="search-link" id="linkedin-link" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+        <p id="status" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+    <script>
+      const form = document.querySelector("#search-form");
+      const roles = document.querySelector("#roles");
+      const locationField = document.querySelector("#location");
+      const links = {
+        google: document.querySelector("#google-link"),
+        indeed: document.querySelector("#indeed-link"),
+        linkedin: document.querySelector("#linkedin-link"),
+      };
+
+      function updateSearches() {
+        const roleQuery = roles.value.trim();
+        const city = locationField.value.trim();
+        const google = new URL("https://www.google.com/search");
+        google.searchParams.set("q", `hybrid ${roleQuery} jobs in ${city}`);
+        google.searchParams.set("ibp", "htl;jobs");
+        links.google.href = google.href;
+
+        const indeed = new URL("https://www.indeed.com/jobs");
+        indeed.searchParams.set("q", `hybrid ${roleQuery}`);
+        indeed.searchParams.set("l", city);
+        links.indeed.href = indeed.href;
+
+        const linkedin = new URL("https://www.linkedin.com/jobs/search/");
+        linkedin.searchParams.set("keywords", roleQuery);
+        linkedin.searchParams.set("location", city);
+        linkedin.searchParams.set("f_WT", "3");
+        links.linkedin.href = linkedin.href;
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        updateSearches();
+        document.querySelector("#status").textContent =
+          `Search links updated for hybrid roles near ${locationField.value.trim()}.`;
+      });
+
+      updateSearches();
+    </script>
+  </body>
+</html>
